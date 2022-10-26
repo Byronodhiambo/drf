@@ -5,6 +5,11 @@ from django.views.generic import CreateView
 from django.utils.text import slugify
 from .forms import ExpenseForm
 import json
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import ProjectSerializer
 
 def project_list(request):
     project_list = Project.objects.all()
@@ -60,3 +65,13 @@ class ProjectCreateView(CreateView):
             )
 
         return redirect(self.object)
+
+@api_view(['GET', 'POST'])
+def randomProjects(request):
+    instance = Project.objects.all().order_by('?').first()
+    data={}
+    if instance:
+        data = ProjectSerializer(instance).data
+        # data = model_to_dict(projectdata, fields=['id'])
+    return Response(data)
+
