@@ -7,6 +7,10 @@ class Project(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     budget = models.IntegerField()
 
+    @property
+    def disc_budget(self):
+        return "%.2f" %(float(self.budget)*0.8)
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Project, self).save(*args, **kwargs)
