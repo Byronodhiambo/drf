@@ -10,7 +10,7 @@ from django.forms.models import model_to_dict
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import ProjectSerializer
-from rest_framework import generics
+from rest_framework import generics, permissions,authentication
 
 def project_list(request):
     project_list = Project.objects.all()
@@ -77,19 +77,16 @@ def randomProjects(request):
     return Response(data)
 
 
-@api_view(['POST'])
-def create(request):    
-    serializer = ProjectSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        print(serializer.data)
-        return Response(serializer.data)
+class ProjectListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticatedOrReadOnly]
 
-    return Response('INVALID DATA')
 
 class RetriveProjectAPIView(generics.RetrieveAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    # lookup_field = id
-
+    lookup_fields = 'pk'
 
 
