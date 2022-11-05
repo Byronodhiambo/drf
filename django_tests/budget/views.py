@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import ProjectSerializer
 from rest_framework import generics, permissions,authentication
+from .permissions import IsStaffEditorPermissionn
 
 def project_list(request):
     project_list = Project.objects.all()
@@ -81,7 +82,8 @@ class ProjectListCreateAPIView(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes=[permissions.IsAuthenticatedOrReadOnly]
+    permission_classes=[IsStaffEditorPermissionn]
 
 
 class RetriveProjectAPIView(generics.RetrieveAPIView):
